@@ -32,7 +32,7 @@ export default function Materias() {
                             </div>
                             <div className="bg-white rounded-b-lg w-full p-4">
                                 <span className="p-2 text-2xl">
-                                    {item.profesor}
+                                    Prof. {item.profesor}
                                 </span>
                             </div>
                         </div>
