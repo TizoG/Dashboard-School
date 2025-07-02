@@ -1,0 +1,2 @@
+{"__type":"$$EventMessageAudit","id":"66d65c63-c1e8-4e0f-84a1-840158c85931","ts":"2025-06-30T16:07:36.961+00:00","eventName":"n8n.audit.workflow.created","message":"n8n.audit.workflow.created","payload":{"userId":"6ef019af-9720-4c69-80c3-59acc9a08f21","_email":"tirado114@hotmial.com","_firstName":"jose","_lastName":"tirado","globalRole":"global:owner","workflowId":"I8d6m2WVy38d981J","workflowName":"My workflow"}}
+{"__type":"$$EventMessageConfirm","confirm":"66d65c63-c1e8-4e0f-84a1-840158c85931","ts":"2025-06-30T16:07:36.983+00:00","source":{"id":"0","name":"eventBus"}}

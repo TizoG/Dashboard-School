@@ -13,3 +13,103 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+
+enum Rol{
+  ALUMNO
+  PROFESOR
+}
+model Usuario{
+  id String @id @default(uuid())
+  clerkId String @unique
+  nombre String?
+  rol Rol @default(ALUMNO)
+  tareas Tareas[]
+  eventos Evento[]
+  notasRapidas NotasRapidas[]
+  asignaturas Asignatura[]
+  notasExamenes NotasExamenes[]
+}
+model Asignatura{
+  id Int @id @default(autoincrement()) 
+  usuario_id String
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  nombre String 
+  descripcion String? @db.Text
+  fechaCreacion DateTime @default(now())
+
+  temario Temario[]
+  notasExamenes NotasExamenes[]
+
+}
+
+model Temario{
+  id Int @id @default(autoincrement())
+  asignatura_id Int
+  asignatura Asignatura @relation(fields: [asignatura_id], references: [id], onDelete: Cascade)
+  titulo String
+  contenido String? @db.Text
+  
+}
+
+model NotasExamenes{
+  id Int @id @default(autoincrement())
+  asignatura_id Int
+  asignatura Asignatura @relation(fields: [asignatura_id], references: [id], onDelete: Cascade)
+  titulo String
+  nota Decimal @db.Decimal()
+  contenido String? @db.Text
+  fechaCreacion DateTime @default(now())
+  usuario_id String
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+}
+
+
+enum TipoNota{
+  RAPIDA
+  MONS
+}
+model NotasRapidas{
+  id Int @id @default(autoincrement())
+  tipo TipoNota
+  titulo String
+  contenido String @db.Text
+  fechaCreacion DateTime @default(now())
+  usuario_id String
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+}
+
+enum Estado{
+  PENDIENTE
+  COMPLETADA
+}
+
+enum Prioridad{
+  BAJA
+  MEDIA
+  ALTA
+}
+model Tareas{
+  id Int @id @default(autoincrement())
+  titulo String 
+  descripcion String? @db.Text
+  estado Estado
+  prioridad Prioridad
+  fechaCreacion DateTime @default(now())
+  fechaVencimiento DateTime 
+  usuario_id String
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+}
+
+model Evento{
+  id Int @id @default(autoincrement())
+  titulo String
+  descripcion String? @db.Text
+  fechaInicio DateTime 
+  fechaFin DateTime 
+  usuario_id String
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+}
+
+

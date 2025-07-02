@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
-
+import {
+    ClerkProvider,
+    SignInButton,
+    SignUpButton,
+    SignedIn,
+    SignedOut,
+    UserButton,
+} from '@clerk/nextjs';
 import {
     SidebarProvider,
     SidebarTrigger,
@@ -26,16 +33,18 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="es" className={`${roboto.className}   `}>
-            <body className="antialiased font-roboto">
-                <SidebarProvider>
-                    <AppSidebar />
-                    <div className="w-full bg-stone-300 flex flex-col min-h-screen">
-                        <Navbar />
-                        <main>{children}</main>
-                    </div>
-                </SidebarProvider>
-            </body>
-        </html>
+        <ClerkProvider>
+            <html lang="es" className={`${roboto.className}   `}>
+                <body className="antialiased font-roboto">
+                    <SidebarProvider>
+                        <AppSidebar />
+                        <div className="w-full bg-stone-300 flex flex-col min-h-screen">
+                            <Navbar />
+                            <main>{children}</main>
+                        </div>
+                    </SidebarProvider>
+                </body>
+            </html>
+        </ClerkProvider>
     );
 }
