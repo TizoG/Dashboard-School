@@ -64,3 +64,29 @@ export async function PUT(req: NextRequest) {
         );
     }
 }
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { id } = body;
+        if (!id) {
+            return NextResponse.json(
+                { error: 'Faltan datos' },
+                { status: 400 }
+            );
+        }
+
+        const notaEliminada = await prisma.notasRapidas.delete({
+            where: {
+                id: Number(id),
+            },
+        });
+
+        return NextResponse.json(notaEliminada, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Error al eliminar la nota' },
+            { status: 500 }
+        );
+    }
+}

@@ -55,7 +55,10 @@ export default function Notas() {
                                 onUpdate={handleActualizarNotas}
                                 nota={nota}
                             />
-                            <DeleteNote />
+                            <DeleteNote
+                                id={nota.id}
+                                onDelete={handleActualizarNotas}
+                            />
                         </div>
                     </div>
                 ))}
