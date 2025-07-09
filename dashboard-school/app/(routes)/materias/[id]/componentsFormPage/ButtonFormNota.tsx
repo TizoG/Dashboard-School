@@ -11,63 +11,71 @@ import {
 } from '@/components/animate-ui/headless/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useUser } from '@clerk/nextjs';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-export const ButtonMaterias = () => {
+export const ButtonFormNota = ({ temaId }: { temaId: number }) => {
     const [Open, setOpen] = useState(false);
-    const [nombre, setNombre] = useState('');
-    const [descripcion, setDescripcion] = useState('');
+    const [nota, setNotas] = useState('');
+    const [titulo, setTitulo] = useState('');
+    const [contenido, setContenido] = useState('');
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/asignaturas', {
-                nombre,
-                descripcion,
+            await axios.post('/api/notas', {
+                titulo,
+                contenido,
+                nota,
+                tema_id: temaId,
             });
 
-            console.log('Asignatura creada: ', response.data);
-
-            setNombre('');
-            setDescripcion('');
+            setNotas('');
+            setContenido('');
+            setTitulo('');
             setOpen(false);
         } catch (error) {
-            console.log('Error al crear la asignatura: ', error);
-            alert(
-                'Hubo un error al guardar la asignatura AQUI PONDREMOS CARTELES'
-            );
+            console.log('Error al crear el tema: ', error);
+            alert('Hubo un error al guardar el tema AQUI PONDREMOS CARTELES');
         }
     };
-
     return (
         <>
             <LiquidButton
                 className="cursor-pointer"
                 onClick={() => setOpen(true)}
             >
-                Añade Asignaturas
+                Agregar nota
             </LiquidButton>
             <Dialog open={Open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
 
                 <DialogPanel>
                     <DialogHeader>
-                        <DialogTitle>Asignatura</DialogTitle>
+                        <DialogTitle>Nueva Nota</DialogTitle>
                     </DialogHeader>
 
                     <div>
-                        <span>Asignatura:</span>
+                        <span>Titulo:</span>
                         <Input
                             type="text"
-                            placeholder="Asignatura"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
+                            placeholder="Titulo "
+                            value={titulo}
+                            onChange={(e) => setTitulo(e.target.value)}
                         />
-                        <span>Profesor:</span>
+                        <span>Nota:</span>
+                        <Input
+                            placeholder="Introduce la nota "
+                            value={nota}
+                            onChange={(e) => setNotas(e.target.value)}
+                        />
+                        <span>Anotaciones:</span>
                         <Input
                             type="text"
-                            placeholder="Profesor"
-                            onChange={(e) => setDescripcion(e.target.value)}
+                            placeholder="Introduce el tipo trabajo, examen,tarea, etc."
+                            value={contenido}
+                            onChange={(e) => setContenido(e.target.value)}
                         />
                     </div>
 

@@ -24,23 +24,21 @@ model Usuario{
   id String @id @default(uuid())
   clerkId String @unique
   nombre String?
-  rol Rol @default(ALUMNO)
+  rol Rol @default(ALUMNO) // esto ahora no lo usamos pensar si eliminarlo
   tareas Tareas[]
   eventos Evento[]
   notasRapidas NotasRapidas[]
-  asignaturas Asignatura[]
-  notasExamenes NotasExamenes[]
+  
 }
 model Asignatura{
   id Int @id @default(autoincrement()) 
   usuario_id String
-  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
   nombre String 
   descripcion String? @db.Text
   fechaCreacion DateTime @default(now())
 
   temario Temario[]
-  notasExamenes NotasExamenes[]
+  
 
 }
 
@@ -50,19 +48,23 @@ model Temario{
   asignatura Asignatura @relation(fields: [asignatura_id], references: [id], onDelete: Cascade)
   titulo String
   contenido String? @db.Text
+  enlace String?
+
+  notasExamenes NotasExamenes[]
   
 }
 
 model NotasExamenes{
   id Int @id @default(autoincrement())
-  asignatura_id Int
-  asignatura Asignatura @relation(fields: [asignatura_id], references: [id], onDelete: Cascade)
   titulo String
-  nota Decimal @db.Decimal()
+  nota Float 
   contenido String? @db.Text
   fechaCreacion DateTime @default(now())
-  usuario_id String
-  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  tema_id Int
+  tema Temario @relation(fields: [tema_id], references: [id], onDelete: Cascade)
+
+  
 }
 
 

@@ -11,63 +11,80 @@ import {
 } from '@/components/animate-ui/headless/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-export const ButtonMaterias = () => {
+export const ButtonForm = ({
+    asignaturaId,
+    onTemaCreado,
+}: {
+    asignaturaId: number;
+    onTemaCreado: () => void;
+}) => {
     const [Open, setOpen] = useState(false);
     const [nombre, setNombre] = useState('');
-    const [descripcion, setDescripcion] = useState('');
+    const [resumen, setResumen] = useState('');
+    const [enlace, setEnlace] = useState('');
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/asignaturas', {
-                nombre,
-                descripcion,
+            const response = await axios.post('/api/temario', {
+                titulo: nombre,
+                contenido: resumen,
+                enlace,
+                asignatura_id: asignaturaId,
             });
 
-            console.log('Asignatura creada: ', response.data);
+            console.log('Tema creado: ', response.data);
 
             setNombre('');
-            setDescripcion('');
+            setResumen('');
+            setEnlace('');
             setOpen(false);
+
+            onTemaCreado();
         } catch (error) {
-            console.log('Error al crear la asignatura: ', error);
-            alert(
-                'Hubo un error al guardar la asignatura AQUI PONDREMOS CARTELES'
-            );
+            console.log('Error al crear el tema: ', error);
+            alert('Hubo un error al guardar el tema AQUI PONDREMOS CARTELES');
         }
     };
-
     return (
         <>
             <LiquidButton
                 className="cursor-pointer"
                 onClick={() => setOpen(true)}
             >
-                Añade Asignaturas
+                Añade tema
             </LiquidButton>
             <Dialog open={Open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
 
                 <DialogPanel>
                     <DialogHeader>
-                        <DialogTitle>Asignatura</DialogTitle>
+                        <DialogTitle>Tema</DialogTitle>
                     </DialogHeader>
 
                     <div>
-                        <span>Asignatura:</span>
+                        <span>Titulo del tema:</span>
                         <Input
                             type="text"
-                            placeholder="Asignatura"
+                            placeholder="Introduce el titulo del tema"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
                         />
-                        <span>Profesor:</span>
+                        <span>Resumen:</span>
+                        <Textarea
+                            placeholder="Pequeño resumen del tema"
+                            value={resumen}
+                            onChange={(e) => setResumen(e.target.value)}
+                        />
+                        <span>Enlace al tema:</span>
                         <Input
-                            type="text"
-                            placeholder="Profesor"
-                            onChange={(e) => setDescripcion(e.target.value)}
+                            type="url"
+                            placeholder="https://..."
+                            value={enlace}
+                            onChange={(e) => setEnlace(e.target.value)}
                         />
                     </div>
 

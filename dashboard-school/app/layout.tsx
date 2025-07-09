@@ -15,6 +15,7 @@ import {
 } from '@/components/animate-ui/radix/sidebar';
 import { AppSidebar } from '@/app/(routes)/(root)/components/AppSidebar/AppSidebar';
 import { Navbar } from '@/components/Shared/Navbar/Navbar';
+import { SyncUserClient } from '@/components/syncUserClient';
 
 const roboto = Roboto({
     weight: ['400', '500', '700'],

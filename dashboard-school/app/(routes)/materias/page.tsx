@@ -1,10 +1,35 @@
+'use client';
 import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
 import Link from 'next/link';
 import { FaCode } from 'react-icons/fa';
 import { MateriasItems } from './Materias-items';
 import { ButtonMaterias } from './components/ButtonMaterias';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
+type Asignatura = {
+    id: number;
+    nombre: string;
+    descripcion: string;
+};
 export default function Materias() {
+    const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios
+            .get('/api/asignaturas')
+            .then((response) => {
+                setAsignaturas(response.data);
+            })
+            .catch((err) => {
+                setError(err.message || 'Error al cargar las asignaturas');
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
     return (
         <section className="p-4">
             <div className="bg-white p-4 rounded-sm flex justify-end ">
@@ -38,6 +63,17 @@ export default function Materias() {
                         </div>
                     </Link>
                 ))}
+                <div>
+                    {asignaturas.map((asignatura) => (
+                        <Link
+                            key={asignatura.id}
+                            href={`/materias/${asignatura.id}`}
+                        >
+                            <p>{asignatura.nombre}</p>
+                            <p>{asignatura.descripcion}</p>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </section>
     );
