@@ -13,12 +13,37 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { LuPen } from 'react-icons/lu';
+import { prisma } from '@/lib/prisma';
+import axios from 'axios';
 
-export const PutNote = () => {
+type PutNoteProps = {
+    nota: {
+        id: number;
+        titulo: string;
+        contenido: string;
+    };
+    onUpdate?: () => void;
+};
+
+export const PutNote = ({ nota, onUpdate }: PutNoteProps) => {
     const [Open, setOpen] = useState(false);
-    const [tipo, setTipo] = useState('');
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
+
+    const handleSubmit = async () => {
+        try {
+            await axios.put('/api/tipsNotas', {
+                id: nota.id,
+                titulo,
+                contenido,
+            });
+            setOpen(false);
+            onUpdate?.();
+        } catch (error) {
+            console.log(error);
+            alert('No pudimos actualizar la nota');
+        }
+    };
     return (
         <>
             <Button
@@ -40,9 +65,15 @@ export const PutNote = () => {
                             <Input
                                 type="text"
                                 placeholder="Titulo de la tarea"
+                                value={titulo}
+                                onChange={(e) => setTitulo(e.target.value)}
                             />
                             <span>Descripcion:</span>
-                            <Textarea placeholder="Describe la tarea" />
+                            <Textarea
+                                placeholder="Describe la tarea"
+                                value={contenido}
+                                onChange={(e) => setContenido(e.target.value)}
+                            />
                         </div>
 
                         <DialogFooter>
@@ -52,9 +83,7 @@ export const PutNote = () => {
                             >
                                 Cancelar
                             </Button>
-                            <Button onClick={() => setOpen(false)}>
-                                Guardar
-                            </Button>
+                            <Button onClick={handleSubmit}>Guardar</Button>
                         </DialogFooter>
                     </DialogPanel>
                 </Dialog>

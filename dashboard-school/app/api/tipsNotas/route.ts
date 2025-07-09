@@ -34,3 +34,33 @@ export async function GET(req: NextRequest) {
     const notas = await prisma.notasRapidas.findMany();
     return NextResponse.json(notas);
 }
+
+export async function PUT(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { id, titulo, contenido } = body;
+        if (!id || !titulo || !contenido) {
+            return NextResponse.json(
+                { error: 'Faltan datos' },
+                { status: 400 }
+            );
+        }
+
+        const notaActualizada = await prisma.notasRapidas.update({
+            where: {
+                id: Number(id),
+            },
+            data: {
+                titulo,
+                contenido,
+            },
+        });
+
+        return NextResponse.json(notaActualizada, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Error al actualizar la nota' },
+            { status: 500 }
+        );
+    }
+}

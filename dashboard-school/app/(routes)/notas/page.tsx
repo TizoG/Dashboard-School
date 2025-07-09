@@ -51,7 +51,10 @@ export default function Notas() {
                     >
                         <p className="pr-8">{nota.contenido}</p>
                         <div className="flex gap-3">
-                            <PutNote />
+                            <PutNote
+                                onUpdate={handleActualizarNotas}
+                                nota={nota}
+                            />
                             <DeleteNote />
                         </div>
                     </div>
