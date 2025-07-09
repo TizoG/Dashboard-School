@@ -16,6 +16,9 @@ import { LuPen } from 'react-icons/lu';
 
 export const PutNote = () => {
     const [Open, setOpen] = useState(false);
+    const [tipo, setTipo] = useState('');
+    const [titulo, setTitulo] = useState('');
+    const [contenido, setContenido] = useState('');
     return (
         <>
             <Button

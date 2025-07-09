@@ -27,7 +27,7 @@ model Usuario{
   rol Rol @default(ALUMNO) // esto ahora no lo usamos pensar si eliminarlo
   tareas Tareas[]
   eventos Evento[]
-  notasRapidas NotasRapidas[]
+
   
 }
 model Asignatura{
@@ -78,8 +78,7 @@ model NotasRapidas{
   titulo String
   contenido String @db.Text
   fechaCreacion DateTime @default(now())
-  usuario_id String
-  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
 }
 
 enum Estado{
