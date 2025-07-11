@@ -11,6 +11,7 @@ import { startOfWeek } from 'date-fns/startOfWeek';
 import { getDay } from 'date-fns/getDay';
 import { es } from 'date-fns/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import MyCalendario from './components/myCalendar';
 
 // Define tu tipo para eventos
 interface MyEvent extends RbcEvent {
@@ -44,14 +45,7 @@ const events: MyEvent[] = [
 export default function Calendario() {
     return (
         <div className="p-4">
-            <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 600 }}
-                culture="es"
-            />
+            <MyCalendario />
         </div>
     );
 }
