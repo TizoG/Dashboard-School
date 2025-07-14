@@ -24,9 +24,14 @@ export async function PUT(
 
 export async function DELETE(
     _: Request,
-    { params }: { params: { id: number } }
+    { params }: { params: { id: string } }
 ) {
-    const { id } = params;
-    await prisma.evento.delete({ where: { id } });
-    return NextResponse.json({ success: true }, { status: 200 });
+    try {
+        const { id } = params;
+        await prisma.evento.delete({ where: { id: Number(id) } });
+        return NextResponse.json({ success: true }, { status: 200 });
+    } catch (error) {
+        console.error('Error eliminando evento:', error);
+        return NextResponse.json({ error: 'Error interno' }, { status: 500 });
+    }
 }

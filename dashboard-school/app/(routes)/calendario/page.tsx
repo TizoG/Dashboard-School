@@ -25,23 +25,6 @@ const locales = {
     es: es,
 };
 
-const localizer = dateFnsLocalizer({
-    format,
-    parse,
-    startOfWeek,
-    getDay,
-    locales,
-});
-
-const events: MyEvent[] = [
-    {
-        title: 'Examen Matemáticas',
-        start: new Date(2025, 6, 5, 10, 0), // 5 de julio 2025
-        end: new Date(2025, 6, 5, 11, 30),
-        description: 'Capítulo 3 al 5',
-    },
-];
-
 export default function Calendario() {
     return (
         <div className="p-4">

@@ -30,6 +30,7 @@ const localizer = dateFnsLocalizer({
 
 export default function MyCalendario() {
     const [eventos, setEventos] = useState<MyEvent[]>([]);
+    const [editando, setEditando] = useState<MyEvent | null>(null);
 
     const fetchEvents = async () => {
         const res = await axios.get('/api/eventos');
@@ -52,6 +53,21 @@ export default function MyCalendario() {
         fetchEvents();
     };
 
+    const handleUpdate = async (eventoActualizado: MyEvent) => {
+        try {
+            await axios.put(`/api/eventos/${eventoActualizado.id}`, {
+                title: eventoActualizado.title,
+                description: eventoActualizado.descripcion,
+                start: eventoActualizado.start,
+                end: eventoActualizado.end,
+            });
+            alert('Evento actualizado');
+        } catch (error) {
+            console.error(error);
+            alert('Error al actualizar el evento');
+        }
+    };
+
     const eventPropGetter = (evento: MyEvent) => ({
         style: {
             backgroundColor: '#3b82f6',
@@ -61,12 +77,16 @@ export default function MyCalendario() {
         },
     });
 
+    const openEditForm = (event: MyEvent) => {
+        setEditando(event);
+    };
+
     const EventComponent = ({ event }: { event: MyEvent }) => (
         <div className="relative group">
             <strong>{event.titulo}</strong>
             <div className="text-sm">{event.descripcion}</div>
             <div className="absolute right-0 top-0 hidden group-hover:flex gap-1">
-                <button onClick={() => alert(`Editar ${event.id}`)}>
+                <button onClick={openEditForm}>
                     <FaEdit className="text-white hover:text-yellow-300" />
                 </button>
                 <button onClick={() => handleDelete(event.id)}>
