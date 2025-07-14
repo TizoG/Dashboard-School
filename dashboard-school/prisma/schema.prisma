@@ -16,20 +16,7 @@ datasource db {
 
 
 
-enum Rol{
-  ALUMNO
-  PROFESOR
-}
-model Usuario{
-  id String @id @default(uuid())
-  clerkId String @unique
-  nombre String?
-  rol Rol @default(ALUMNO) // esto ahora no lo usamos pensar si eliminarlo
-  tareas Tareas[]
-  eventos Evento[]
 
-  
-}
 model Asignatura{
   id Int @id @default(autoincrement()) 
   usuario_id String
@@ -99,8 +86,7 @@ model Tareas{
   prioridad Prioridad
   fechaCreacion DateTime @default(now())
   fechaVencimiento DateTime 
-  usuario_id String
-  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  
 }
 
 model Evento{
@@ -109,8 +95,8 @@ model Evento{
   descripcion String? @db.Text
   fechaInicio DateTime 
   fechaFin DateTime 
-  usuario_id String
-  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
 
 
