@@ -25,6 +25,7 @@ model Asignatura{
   fechaCreacion DateTime @default(now())
 
   temario Temario[]
+  archivo Archivos[]
   
 
 }
@@ -100,3 +101,25 @@ model Evento{
 }
 
 
+
+enum TipoMime {
+  PDF
+  PNG
+  TXT
+  JPG
+  DOC 
+  DOCX
+  GIF
+  JPEG
+}
+
+model Archivos{
+  id Int @id @default(autoincrement())
+  nombre String
+  tipoMime TipoMime
+  url String @db.Text
+  fechaSubida DateTime @default(now())
+
+  asignatura_id Int
+  asignatura Asignatura @relation(fields: [asignatura_id], references: [id])
+}
