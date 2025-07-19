@@ -112,11 +112,11 @@ export default function Materias() {
             <div className="flex justify-between items-center">
               <div>
                 <span className="text-sm text-gray-600">Total </span>
-                <span className=" text-gray-600 text-sm">asignaturas:</span>
+                <span className=" text-gray-600 text-sm">asignaturas</span>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600">Puntos Totales</p>
-                <p className="text-sm text-gray-600">Obtenidos</p>
+                <p className="text-sm text-gray-600">Examenes</p>
+                <p className="text-sm text-gray-600">Pendientes</p>
               </div>
             </div>
             <div className="flex justify-between items center">
@@ -130,8 +130,8 @@ export default function Materias() {
 
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-sm text-gray-600">Total </p>
-                <p className="text-sm text-gray-600">asignaturas:</p>
+                <p className="text-sm text-gray-600">Tareas </p>
+                <p className="text-sm text-gray-600">Pendientes</p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-600">Tareas</p>

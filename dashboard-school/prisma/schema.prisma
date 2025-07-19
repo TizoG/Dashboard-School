@@ -85,6 +85,8 @@ model Tareas{
   id Int @id @default(autoincrement())
   titulo String 
   descripcion String? @db.Text
+  asignatura String
+  tipo String
   estado Estado
   prioridad Prioridad
   fechaCreacion DateTime @default(now())
