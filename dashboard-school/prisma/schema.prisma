@@ -23,7 +23,7 @@ model Asignatura{
   nombre String 
   descripcion String? @db.Text
   fechaCreacion DateTime @default(now())
-  profesor String @default("")
+  profesor String 
   color String @default("#A78BFA")
 
   temario Temario[]
