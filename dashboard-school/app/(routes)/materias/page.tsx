@@ -1,27 +1,68 @@
 'use client';
-import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
-import Link from 'next/link';
-import { FaCode } from 'react-icons/fa';
-import { MateriasItems } from './Materias-items';
-import { ButtonMaterias } from './components/ButtonMaterias';
+
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
+
+import { FaCode, FaDatabase, FaLaptopCode } from 'react-icons/fa';
+import { FaArrowUpFromBracket, FaRegLightbulb } from 'react-icons/fa6';
+import { BsWindowFullscreen } from 'react-icons/bs';
+import { TbServerCog } from 'react-icons/tb';
+
+import { ButtonMaterias } from './components/ButtonMaterias';
+import { MateriasItems } from './Materias-items';
 
 type Asignatura = {
     id: number;
     nombre: string;
     descripcion: string;
 };
+
+type AsignaturaEnriquecida = Asignatura & {
+    href: string;
+    icon?: React.ElementType;
+    color: string;
+    colorIcon: string;
+};
+
+function normalizarTexto(texto: string): string {
+    return texto
+        .normalize('NFD') // separar acentos
+        .replace(/[\u0300-\u036f]/g, '') // quitar acentos
+        .toLowerCase()
+        .trim();
+}
+
+function enriquecerAsignaturas(
+    asignaturasDesdeDB: Asignatura[]
+): AsignaturaEnriquecida[] {
+    return asignaturasDesdeDB.map((asignatura) => {
+        const item = MateriasItems.find(
+            (m) =>
+                normalizarTexto(m.title) === normalizarTexto(asignatura.nombre)
+        );
+
+        return {
+            ...asignatura,
+            href: item?.href ?? `/materias/${asignatura.id}`,
+            icon: item?.icon,
+            color: item?.color ?? 'bg-gray-200',
+            colorIcon: item?.colorIcon ?? 'text-gray-600',
+        };
+    });
+}
+
 export default function Materias() {
-    const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
-    const [error, setError] = useState(null);
+    const [asignaturas, setAsignaturas] = useState<AsignaturaEnriquecida[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         axios
             .get('/api/asignaturas')
             .then((response) => {
-                setAsignaturas(response.data);
+                const enriched = enriquecerAsignaturas(response.data);
+                setAsignaturas(enriched);
             })
             .catch((err) => {
                 setError(err.message || 'Error al cargar las asignaturas');
@@ -30,50 +71,50 @@ export default function Materias() {
                 setLoading(false);
             });
     }, []);
+
+    if (loading) {
+        return <p className="p-4">Cargando asignaturas...</p>;
+    }
+
+    if (error) {
+        return <p className="p-4 text-red-500">Error: {error}</p>;
+    }
+
     return (
-        <section className="p-4">
-            <div className="bg-white p-4 rounded-sm flex justify-end ">
+        <section className="p-6 max-w-7xl mx-auto">
+            <div className="flex justify-end mb-6">
                 <ButtonMaterias />
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-4">
-                {MateriasItems.map((item) => (
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {asignaturas.map((asignatura) => (
                     <Link
-                        key={item.title}
-                        href={item.href}
-                        className="inline-block flex-col hover:scale-[1.03] transform transition-transform ease-out duration-200 hover:shadow-lg"
+                        key={asignatura.id}
+                        href={asignatura.href}
+                        className="group border hover:scale-105 border-gray-200 rounded-xl hover:shadow-md transition-transform hover:-traslate-y-1 bg-white"
                     >
                         <div>
                             <div
-                                className={`${item.color} w-full flex justify-center items-center p-2 rounded-t-lg gap-9`}
+                                className={`${asignatura.color} p-5 rounded-t-xl flex justify-between items-center`}
                             >
-                                <div>
-                                    <h2 className="p-2 text-4xl text-white">
-                                        {item.title}
-                                    </h2>
-                                </div>
-                                <item.icon
-                                    className={`${item.colorIcon} text-9xl`}
-                                />
+                                <h2 className="text-white text-xl font-semibold leading-snug">
+                                    {asignatura.nombre}
+                                </h2>
+                                {asignatura.icon && (
+                                    <asignatura.icon
+                                        size={48}
+                                        className={`${asignatura.colorIcon} `}
+                                    />
+                                )}
                             </div>
-                            <div className="bg-white rounded-b-lg w-full p-4">
-                                <span className="p-2 text-2xl">
-                                    Prof. {item.profesor}
-                                </span>
+                            <div className="p-4">
+                                <p className="text-sm text-gray-600">
+                                    Prof. {asignatura.descripcion}
+                                </p>
                             </div>
                         </div>
                     </Link>
                 ))}
-                <div>
-                    {asignaturas.map((asignatura) => (
-                        <Link
-                            key={asignatura.id}
-                            href={`/materias/${asignatura.id}`}
-                        >
-                            <p>{asignatura.nombre}</p>
-                            <p>{asignatura.descripcion}</p>
-                        </Link>
-                    ))}
-                </div>
             </div>
         </section>
     );

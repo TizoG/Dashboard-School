@@ -42,7 +42,7 @@ export const ButtonMaterias = () => {
     return (
         <>
             <LiquidButton
-                className="cursor-pointer"
+                className="cursor-pointer shadow-md border border-gray-500 hover:border-white "
                 onClick={() => setOpen(true)}
             >
                 Añade Asignaturas

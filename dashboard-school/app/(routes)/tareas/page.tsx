@@ -5,11 +5,12 @@ import { ComponentsTodo } from './components/ComponentsTodo';
 import { LuPen } from 'react-icons/lu';
 import { TfiComment } from 'react-icons/tfi';
 import { ButtonTodo } from './components/ButtonTodo';
+
 export default function Tareas() {
     return (
         <section className="bg-white w-full h-full flex flex-col items-center pt-4">
             <div className="flex flex-col w-4xl">
-                <h1 className="text-3xl font-bold">Hoy</h1>
+                <h1 className="text-3xl font-bold">Tarea</h1>
                 <div className="flex gap-2 items-center">
                     <CiCircleCheck className="text-gray-400" />
                     <p className="text-gray-400">9 tareas</p>
