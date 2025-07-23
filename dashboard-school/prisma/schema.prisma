@@ -23,6 +23,8 @@ model Asignatura{
   nombre String 
   descripcion String? @db.Text
   fechaCreacion DateTime @default(now())
+  profesor String 
+  color String @default("#A78BFA")
 
   temario Temario[]
   archivo Archivos[]
@@ -52,6 +54,7 @@ model NotasExamenes{
   tema_id Int
   tema Temario @relation(fields: [tema_id], references: [id], onDelete: Cascade)
 
+  archivoUrl String? @db.Text
   
 }
 
@@ -83,6 +86,8 @@ model Tareas{
   id Int @id @default(autoincrement())
   titulo String 
   descripcion String? @db.Text
+  asignatura String
+  tipo String
   estado Estado
   prioridad Prioridad
   fechaCreacion DateTime @default(now())
@@ -115,6 +120,7 @@ enum TipoMime {
 
 model Archivos{
   id Int @id @default(autoincrement())
+  usuario_id String
   nombre String
   tipoMime TipoMime
   url String @db.Text

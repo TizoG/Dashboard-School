@@ -39,7 +39,7 @@ export default function RootLayout({
                 <body className="antialiased font-roboto">
                     <SidebarProvider>
                         <AppSidebar />
-                        <div className="w-full  flex flex-col min-h-screen">
+                        <div className="w-full bg-[#F3F5F4] flex flex-col min-h-screen">
                             <Navbar />
                             <main>{children}</main>
                         </div>

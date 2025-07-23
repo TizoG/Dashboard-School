@@ -1,121 +1,171 @@
 'use client';
-
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import axios from 'axios';
-
-import { FaCode, FaDatabase, FaLaptopCode } from 'react-icons/fa';
-import { FaArrowUpFromBracket, FaRegLightbulb } from 'react-icons/fa6';
-import { BsWindowFullscreen } from 'react-icons/bs';
-import { TbServerCog } from 'react-icons/tb';
-
-import { ButtonMaterias } from './components/ButtonMaterias';
 import { MateriasItems } from './Materias-items';
+import Link from 'next/link';
+import { ButtonMaterias } from './components/ButtonMaterias';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { BookOpen } from 'lucide-react';
+import { PlanificacionComponents } from './components/PlanificacionComponents';
 
 type Asignatura = {
     id: number;
     nombre: string;
     descripcion: string;
-};
-
-type AsignaturaEnriquecida = Asignatura & {
-    href: string;
-    icon?: React.ElementType;
+    icon: string;
     color: string;
-    colorIcon: string;
+    profesor: string;
 };
 
-function normalizarTexto(texto: string): string {
-    return texto
-        .normalize('NFD') // separar acentos
-        .replace(/[\u0300-\u036f]/g, '') // quitar acentos
-        .toLowerCase()
-        .trim();
-}
-
-function enriquecerAsignaturas(
-    asignaturasDesdeDB: Asignatura[]
-): AsignaturaEnriquecida[] {
-    return asignaturasDesdeDB.map((asignatura) => {
-        const item = MateriasItems.find(
-            (m) =>
-                normalizarTexto(m.title) === normalizarTexto(asignatura.nombre)
-        );
-
-        return {
-            ...asignatura,
-            href: item?.href ?? `/materias/${asignatura.id}`,
-            icon: item?.icon,
-            color: item?.color ?? 'bg-gray-200',
-            colorIcon: item?.colorIcon ?? 'text-gray-600',
-        };
-    });
+function getMateriaVisuales(nombre: string) {
+    const item = MateriasItems.find(
+        (materia) => materia.title.toLowerCase() === nombre.toLowerCase()
+    );
+    return item
+        ? {
+              icon: item.icon,
+              color: item.color,
+              colorIcon: item.colorIcon,
+              gradient: item.gradient,
+          }
+        : {
+              icon: () => <BookOpen className="text-6xl text-[#556b2f]" />,
+              gradient: 'linear-gradient(135deg, #556b2f, #8f9779)', // De verde oliva oscuro a verde oliva grisáceo
+              colorIcon: 'text-olive-700',
+          };
 }
 
 export default function Materias() {
-    const [asignaturas, setAsignaturas] = useState<AsignaturaEnriquecida[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         axios
             .get('/api/asignaturas')
-            .then((response) => {
-                const enriched = enriquecerAsignaturas(response.data);
-                setAsignaturas(enriched);
-            })
-            .catch((err) => {
-                setError(err.message || 'Error al cargar las asignaturas');
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            .then((res) => setAsignaturas(res.data))
+            .catch((err) =>
+                setError(err?.message || 'Error al cargar las asignaturas')
+            )
+            .finally(() => setLoading(false));
     }, []);
 
-    if (loading) {
-        return <p className="p-4">Cargando asignaturas...</p>;
-    }
-
-    if (error) {
-        return <p className="p-4 text-red-500">Error: {error}</p>;
-    }
+    if (loading) return <p className="p-4">Cargando asignaturas...</p>;
+    if (error) return <p className="p-4 text-red-500">{error}</p>;
 
     return (
-        <section className="p-6 max-w-7xl mx-auto">
-            <div className="flex justify-end mb-6">
+        <section className="p-4 max-w-7xl mx-auto">
+            {/* Botón arriba */}
+            <div className="bg-white p-4 rounded-sm flex justify-end">
                 <ButtonMaterias />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {asignaturas.map((asignatura) => (
-                    <Link
-                        key={asignatura.id}
-                        href={asignatura.href}
-                        className="group border hover:scale-105 border-gray-200 rounded-xl hover:shadow-md transition-transform hover:-traslate-y-1 bg-white"
-                    >
-                        <div>
-                            <div
-                                className={`${asignatura.color} p-5 rounded-t-xl flex justify-between items-center`}
+            {/* Cards + Estadísticas */}
+            <div className="mt-4 grid lg:grid-cols-[2fr_1fr] gap-4">
+                {/* Cards con máx 2 por fila */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {asignaturas.map((asignatura) => {
+                        const {
+                            icon: Icon,
+                            color,
+                            colorIcon,
+                            gradient,
+                        } = getMateriaVisuales(asignatura.nombre);
+
+                        return (
+                            <Link
+                                key={asignatura.id}
+                                href={`/materias/${asignatura.id}`}
+                                style={{ backgroundImage: gradient }}
+                                className="relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 rounded-3xl p-6 h-full"
                             >
-                                <h2 className="text-white text-xl font-semibold leading-snug">
-                                    {asignatura.nombre}
-                                </h2>
-                                {asignatura.icon && (
-                                    <asignatura.icon
-                                        size={48}
-                                        className={`${asignatura.colorIcon} `}
-                                    />
-                                )}
+                                <div className="flex flex-col h-full">
+                                    <div className="flex justify-between">
+                                        <div className="flex flex-col items-start mb-4">
+                                            <h3 className="text-xl text-white font-bold mb-1 text-balance">
+                                                {asignatura.nombre}
+                                            </h3>
+                                            <p className="text-sm text-white/80">
+                                                {asignatura.profesor}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <Icon
+                                                className={`${colorIcon} text-4xl opacity-40`}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-white/90 text-sm font-medium">
+                                            {asignatura.descripcion}
+                                        </span>
+                                    </div>
+                                    <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full" />
+                                    <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-white/10 rounded-full" />
+                                </div>
+                            </Link>
+                        );
+                    })}
+                </div>
+
+                {/* Estadísticas */}
+                <div className="bg-white rounded-2xl p-6 border border-gray-100">
+                    <h3 className="text-lg font-semibold mb-4">Estadísticas</h3>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <span className="text-sm text-gray-600">
+                                    Total{' '}
+                                </span>
+                                <span className=" text-gray-600 text-sm">
+                                    asignaturas
+                                </span>
                             </div>
-                            <div className="p-4">
+                            <div className="text-right">
                                 <p className="text-sm text-gray-600">
-                                    Prof. {asignatura.descripcion}
+                                    Examenes
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Pendientes
                                 </p>
                             </div>
                         </div>
-                    </Link>
-                ))}
+                        <div className="flex justify-between items center">
+                            <div className="text-3xl font-bold text-blue-600">
+                                {asignaturas.length.toString().padStart(2, '0')}
+                            </div>
+                            <div className="text-3xl font-bold text-blue-600">
+                                {asignaturas.length.toString().padStart(2, '0')}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-gray-600">Tareas </p>
+                                <p className="text-sm text-gray-600">
+                                    Pendientes
+                                </p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-600">Tareas</p>
+                                <p className="text-sm text-gray-600">
+                                    En Progreso
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                            <div className="text-3xl font-bold text-blue-600">
+                                {asignaturas.length.toString().padStart(2, '0')}
+                            </div>
+                            <div className="text-3xl font-bold text-blue-600">
+                                {asignaturas.length.toString().padStart(2, '0')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <PlanificacionComponents />
         </section>
     );
 }

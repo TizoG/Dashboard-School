@@ -1,44 +1,46 @@
-'use client';
+"use client";
 
-import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
+import { LiquidButton } from "@/components/animate-ui/buttons/liquid";
 import {
-    Dialog,
-    DialogBackdrop,
-    DialogFooter,
-    DialogHeader,
-    DialogPanel,
-    DialogTitle,
-} from '@/components/animate-ui/headless/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+  Dialog,
+  DialogBackdrop,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogTitle,
+} from "@/components/animate-ui/headless/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { MateriasItems } from "../Materias-items";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 export const ButtonMaterias = () => {
-    const [Open, setOpen] = useState(false);
-    const [nombre, setNombre] = useState('');
-    const [descripcion, setDescripcion] = useState('');
+  const [Open, setOpen] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [color, setColor] = useState("#A78BFA");
+  const [profesor, setProfesor] = useState("");
 
-    const handleSubmit = async () => {
-        try {
-            const response = await axios.post('/api/asignaturas', {
-                nombre,
-                descripcion,
-            });
+  const handleSubmit = async () => {
+    try {
+      const base = MateriasItems.find(
+        (m) => m.title.toLowerCase() === nombre.toLowerCase()
+      );
 
-            console.log('Asignatura creada: ', response.data);
+      const response = await axios.post("/api/asignaturas", {
+        nombre,
+        descripcion,
+        color,
+        icon: base?.icon || "Book",
+        profesor,
+      });
 
-            setNombre('');
-            setDescripcion('');
-            setOpen(false);
-        } catch (error) {
-            console.log('Error al crear la asignatura: ', error);
-            alert(
-                'Hubo un error al guardar la asignatura AQUI PONDREMOS CARTELES'
-            );
-        }
-    };
+      toast.success("Asignatura creada");
 
+<<<<<<< HEAD
     return (
         <>
             <LiquidButton
@@ -49,42 +51,75 @@ export const ButtonMaterias = () => {
             </LiquidButton>
             <Dialog open={Open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
+=======
+      console.log("Asignatura creada: ", response.data);
+      // No hemos introducido el onAdd
+      setNombre("");
+      setDescripcion("");
+      setOpen(false);
+    } catch (error) {
+      console.log("Error al crear la asignatura: ", error);
+      toast.error(
+        "Hubo un error al guardar la asignatura AQUI PONDREMOS CARTELES"
+      );
+    }
+  };
+>>>>>>> ed9cd9889c3332e58133fe621ba120e9165775d6
 
-                <DialogPanel>
-                    <DialogHeader>
-                        <DialogTitle>Asignatura</DialogTitle>
-                    </DialogHeader>
+  return (
+    <>
+      <LiquidButton className="cursor-pointer" onClick={() => setOpen(true)}>
+        Añade Asignaturas
+      </LiquidButton>
+      <Dialog open={Open} onClose={() => setOpen(false)}>
+        <DialogBackdrop />
 
-                    <div>
-                        <span>Asignatura:</span>
-                        <Input
-                            type="text"
-                            placeholder="Asignatura"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                        />
-                        <span>Profesor:</span>
-                        <Input
-                            type="text"
-                            placeholder="Profesor"
-                            onChange={(e) => setDescripcion(e.target.value)}
-                        />
-                    </div>
+        <DialogPanel>
+          <DialogHeader>
+            <DialogTitle>Asignatura</DialogTitle>
+          </DialogHeader>
 
-                    <DialogFooter>
-                        <Button
-                            variant={'outline'}
-                            onClick={() => setOpen(false)}
-                        >
-                            Cancelar
-                        </Button>
+          <div>
+            <span>Asignatura:</span>
+            <Input
+              type="text"
+              placeholder="Asignatura"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+            <span>Descripción:</span>
+            <Textarea
+              placeholder="Describe la asignatura"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+            />
+            <span>Profesor:</span>
+            <Input
+              type="text"
+              placeholder="Profesor"
+              value={profesor}
+              onChange={(e) => setProfesor(e.target.value)}
+            />
+            <span>Color:</span>
+            <Input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            />
+            <span className="text-sm">{color}</span>
+          </div>
 
-                        <Button type="submit" onClick={handleSubmit}>
-                            Guardar
-                        </Button>
-                    </DialogFooter>
-                </DialogPanel>
-            </Dialog>
-        </>
-    );
+          <DialogFooter>
+            <Button variant={"outline"} onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
+
+            <Button type="submit" onClick={handleSubmit}>
+              Guardar
+            </Button>
+          </DialogFooter>
+        </DialogPanel>
+      </Dialog>
+    </>
+  );
 };
