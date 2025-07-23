@@ -54,6 +54,7 @@ model NotasExamenes{
   tema_id Int
   tema Temario @relation(fields: [tema_id], references: [id], onDelete: Cascade)
 
+  archivoUrl String? @db.Text
   
 }
 

@@ -6,12 +6,14 @@ import {
   AccordionTrigger,
 } from "@/components/animate-ui/radix/accordion";
 import { ButtonFormNota } from "./ButtonFormNota";
+import { FaGoogleDrive } from "react-icons/fa";
 
 type NotaExamen = {
   id: number;
   titulo: string;
   contenido: string | null;
   nota: number;
+  archivoUrl: string | null;
 };
 
 type Tema = {
@@ -28,46 +30,58 @@ export const AccordionTemario = ({
   usuarioId: string;
 }) => {
   return (
-    <Accordion type="single" collapsible>
-      {temas.map((tema) => (
-        <AccordionItem key={tema.id} value={tema.id.toString()}>
-          <AccordionTrigger className="cursor-pointer">
-            {tema.titulo}
-          </AccordionTrigger>
-          <AccordionContent>
-            <table className="w-full  table-auto border border-gray-400 rounded-2xl">
-              <thead className="bg-[rgba(144,160,140,0.4)] ">
-                <tr>
-                  <th className="w-1/4 px-4 py-2 text-left">Titulo</th>
-                  <th className="w-1/4 px-4 py-2 text-left">Nota</th>
-                  <th className="w-1/4 px-4 py-2 text-left">Anotación</th>
-                  <th className="w-1/4 px-4 py-2 text-left">Archivos</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tema.notasExamenes.map((nota) => (
-                  <tr key={nota.id} className="hover:bg-gray-200 ">
-                    <td className="w-1/4 px-5 py-2">{nota.titulo}</td>
-                    <td className="w-1/4 px-5 py-2">{nota.nota}</td>
-                    <td className="w-1/4 px-5 py-2">{nota.contenido}</td>
-                    <td className="w-1/4 px-5 py-2">nombre archivo</td>
+    <>
+      <Accordion type="single" collapsible>
+        {temas.map((tema) => (
+          <AccordionItem key={tema.id} value={tema.id.toString()}>
+            <AccordionTrigger className="cursor-pointer">
+              {tema.titulo}
+            </AccordionTrigger>
+            <AccordionContent>
+              <p className="mb-2 text-gray-600">{tema.contenido}</p>
+              <table className="w-full  table-auto border border-gray-400 rounded-2xl">
+                <thead className="bg-[rgba(144,160,140,0.4)] ">
+                  <tr>
+                    <th className="w-1/4 px-4 py-2 text-left">Titulo</th>
+                    <th className="w-1/4 px-4 py-2 text-left">Nota</th>
+                    <th className="w-1/4 px-4 py-2 text-left">Anotación</th>
+                    <th className="w-1/4 px-4 py-2 text-left">Archivos</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="mb-2 text-gray-600">{tema.contenido}</p>
-            <ul className="mb-4">
-              {tema.notasExamenes.map((nota) => (
-                <li key={nota.id} className="mb-1">
-                  <strong>{nota.titulo}:</strong> {nota.nota} - {nota.contenido}
-                </li>
-              ))}
-            </ul>
-            <ButtonFormNota temaId={tema.id} />
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+                </thead>
+                <tbody>
+                  {tema.notasExamenes.map((nota) => (
+                    <tr key={nota.id} className="hover:bg-gray-200 ">
+                      <td className="w-1/4 px-5 py-2">{nota.titulo}</td>
+                      <td className="w-1/4 px-5 py-2">{nota.nota}</td>
+                      <td className="w-1/4 px-5 py-2">{nota.contenido}</td>
+                      <td className="w-1/4 px-5 py-2">
+                        {nota.archivoUrl ? (
+                          <a
+                            href={nota.archivoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-blue-600  hover:underline"
+                          >
+                            <FaGoogleDrive className="text-green-600" />
+                            Ver archivo
+                          </a>
+                        ) : (
+                          <span className="text-gray-400 italic">
+                            No disponible
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <ButtonFormNota temaId={tema.id} />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { ButtonMaterias } from "./components/ButtonMaterias";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BookOpen } from "lucide-react";
+import { PlanificacionComponents } from "./components/PlanificacionComponents";
 
 type Asignatura = {
   id: number;
@@ -150,6 +151,7 @@ export default function Materias() {
           </div>
         </div>
       </div>
+      <PlanificacionComponents />
     </section>
   );
 }
