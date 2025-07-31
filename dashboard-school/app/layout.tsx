@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
+import { Nunito, Roboto } from 'next/font/google';
 import './globals.css';
 import {
     ClerkProvider,
@@ -17,7 +17,7 @@ import { AppSidebar } from '@/app/(routes)/(root)/components/AppSidebar/AppSideb
 import { Navbar } from '@/components/Shared/Navbar/Navbar';
 import { SyncUserClient } from '@/components/syncUserClient';
 
-const roboto = Roboto({
+const nunito = Nunito({
     weight: ['400', '500', '700'],
     subsets: ['latin'],
     variable: '--font-roboto',
@@ -35,11 +35,11 @@ export default function RootLayout({
 }>) {
     return (
         <ClerkProvider>
-            <html lang="es" className={`${roboto.className}   `}>
+            <html lang="es" className={`${nunito.className}   `}>
                 <body className="antialiased font-roboto">
                     <SidebarProvider>
                         <AppSidebar />
-                        <div className="w-full bg-[#F3F5F4] flex flex-col min-h-screen">
+                        <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col min-h-screen">
                             <Navbar />
                             <main>{children}</main>
                         </div>

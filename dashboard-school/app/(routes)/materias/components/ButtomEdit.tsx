@@ -10,16 +10,36 @@ import {
     DialogTitle,
 } from '@/components/animate-ui/headless/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import axios from 'axios';
+import { SquarePen, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-import { Textarea } from '@/components/ui/textarea';
+import axios from 'axios';
 import { toast } from 'sonner';
-import { Asignatura } from '@/lib/generated/prisma';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
-type Props = { onAdd?: (nuevaAsignatura: Asignatura) => void };
-export const ButtonMaterias = ({ onAdd }: Props) => {
+type Asignatura = {
+    id: number;
+    nombre: string;
+    descripcion: string;
+
+    color: string;
+    profesor: string;
+    creditos: number;
+    clasificacion: number;
+    semestre: string;
+};
+
+type Props = {
+    onUpdate?: () => void;
+};
+
+export function ButtomEdit({
+    asignatura,
+    onUpdate,
+}: {
+    asignatura: Asignatura;
+    onUpdate?: (Props: Asignatura) => void;
+}) {
     const [Open, setOpen] = useState(false);
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
@@ -29,21 +49,36 @@ export const ButtonMaterias = ({ onAdd }: Props) => {
     const [clasificacion, setClasificacion] = useState(0);
     const [semestre, setSemestre] = useState('');
 
+    useEffect(() => {
+        if (asignatura) {
+            setNombre(asignatura.nombre);
+            setDescripcion(asignatura.descripcion);
+            setColor(asignatura.color);
+            setProfesor(asignatura.profesor);
+            setCreditos(asignatura.creditos);
+            setClasificacion(asignatura.clasificacion);
+            setSemestre(asignatura.semestre);
+        }
+    }, [asignatura]);
+
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/asignaturas', {
-                nombre,
-                descripcion,
-                color,
-                profesor,
-                creditos,
-                clasificacion,
-                semestre,
-            });
+            const response = await axios.put(
+                `/api/asignaturas/${asignatura.id}`,
+                {
+                    nombre,
+                    descripcion,
+                    color,
+                    profesor,
+                    creditos,
+                    clasificacion,
+                    semestre,
+                }
+            );
 
-            toast.success('Asignatura creada');
-            if (onAdd) onAdd(response.data);
-            console.log('Asignatura creada: ', response.data);
+            toast.success('Asignatura actualizada');
+            onUpdate?.(response.data);
+            console.log('Asignatura actualizada: ', response.data);
             // No hemos introducido el onAdd
             setNombre('');
             setDescripcion('');
@@ -63,18 +98,15 @@ export const ButtonMaterias = ({ onAdd }: Props) => {
 
     return (
         <>
-            <LiquidButton
-                className="cursor-pointer"
-                onClick={() => setOpen(true)}
-            >
-                Añade Asignaturas
-            </LiquidButton>
+            <Button size={'sm'} variant={'ghost'} onClick={() => setOpen(true)}>
+                <SquarePen className="h-4 w-4" />
+            </Button>
             <Dialog open={Open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
 
                 <DialogPanel>
                     <DialogHeader>
-                        <DialogTitle>Asignatura</DialogTitle>
+                        <DialogTitle> Editar Asignatura</DialogTitle>
                     </DialogHeader>
 
                     <div>
@@ -148,4 +180,4 @@ export const ButtonMaterias = ({ onAdd }: Props) => {
             </Dialog>
         </>
     );
-};
+}

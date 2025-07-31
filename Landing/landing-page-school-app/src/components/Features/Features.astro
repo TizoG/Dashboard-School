@@ -1,0 +1,56 @@
+---
+import { Palette, Smartphone, Type, UsersRound, Settings } from '@lucide/astro';
+import ComponentFeatures from './components/ComponentFeatures.astro';
+---
+
+<section class="py-20 px-4 bg-white">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2
+                class="font-display text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4"
+            >
+                ¿Por qué usar Dashboard Escolar?
+            </h2>
+            <p class="text-lg md:text-xl text-gray-600 font-display mb-16">
+                Conoce las ventajas que hacen especial a nuestra plataforma
+            </p>
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <ComponentFeatures
+                        icon={Palette}
+                        title="Interfaz minimalista y moderna"
+                        description="Diseño limpio que no distrae de lo importante"
+                    />
+                </div>
+                <div>
+                    <ComponentFeatures
+                        icon={Smartphone}
+                        title="Totalmente responsivo"
+                        description="Funciona perfectamente en todos los dispositivos"
+                    />
+                </div>
+                <div>
+                    <ComponentFeatures
+                        icon={Type}
+                        title="Basado en tipografía Nunito"
+                        description="Texto claro y legible para una mejor experiencia"
+                    />
+                </div>
+                <div>
+                    <ComponentFeatures
+                        icon={UsersRound}
+                        title="Ideal para estudiantes y docentes"
+                        description="Pensado para cubrir las necesidades de ambos perfiles"
+                    />
+                </div>
+                <div>
+                    <ComponentFeatures
+                        icon={Settings}
+                        title="Personalizable por asignatura y tema"
+                        description="Adapta la organización a tu estilo de estudio"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

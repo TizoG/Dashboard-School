@@ -25,6 +25,9 @@ model Asignatura{
   fechaCreacion DateTime @default(now())
   profesor String 
   color String @default("#A78BFA")
+  creditos Int
+  clasificacion Int
+  semestre String
 
   temario Temario[]
   archivo Archivos[]

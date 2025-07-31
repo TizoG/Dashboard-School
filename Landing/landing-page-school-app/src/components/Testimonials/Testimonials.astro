@@ -1,0 +1,39 @@
+---
+import CardTestimonios from './components/CardTestimonios.astro';
+---
+
+<section class="bg-gradient-to-br from-green-50 to-amber-50 py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="font-display text-3xl md:text-4xl lg:text-5xl mb-4">
+                Lo que dicen nuestros usuarios
+            </h2>
+            <p class="text-lg md:text-xl font-display text-gray-600">
+                Testimonios reales de estudiantes y docentes
+            </p>
+        </div>
+        <div class="grid grid-cols-3 gap-8">
+            <CardTestimonios
+                star={4}
+                description="'Desde que uso Dashboard Escolar, no se me olvida ninguna entrega. La interfaz es súper intuitiva.'"
+                avatar="LM"
+                name="Laura Martínez"
+                estudios="Estudiante de Bachillerato"
+            />
+            <CardTestimonios
+                star={5}
+                description="'Desde que uso Dashboard Escolar, no se me olvida ninguna entrega. La interfaz es súper intuitiva.'"
+                avatar="LM"
+                name="Laura Martínez"
+                estudios="Estudiante de Bachillerato"
+            />
+            <CardTestimonios
+                star={3}
+                description="'Desde que uso Dashboard Escolar, no se me olvida ninguna entrega. La interfaz es súper intuitiva.'"
+                avatar="LM"
+                name="Laura Martínez"
+                estudios="Estudiante de Bachillerato"
+            />
+        </div>
+    </div>
+</section>

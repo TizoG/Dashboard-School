@@ -1,0 +1,15 @@
+---
+const { icon: Icon, color, title, descripcion, colorIcon } = Astro.props;
+---
+
+<div
+    class="flex flex-col items-center justify-center bg-white shadow-lg hover:shadow-xl p-6 rounded-lg w-2xl hover:scale-105 transition-all duration-300"
+>
+    <div
+        class={`flex items-center justify-center h-16 w-16 ${color} rounded-2xl mb-4 mx-auto`}
+    >
+        {Icon && <Icon class={colorIcon + ' w-8 h-8'} />}
+    </div>
+    <h3 class="font-display text-lg text-gray-900 mb-2">{title}</h3>
+    <p class="text-gray-600 text-center text-sm font-display">{descripcion}</p>
+</div>

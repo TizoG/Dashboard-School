@@ -20,7 +20,7 @@ export const AppSidebar = () => {
     const pathname = usePathname();
     return (
         <Sidebar className=" bg-white dark:bg-gray-900 shadow-md overflow-hidden">
-            <SidebarHeader className="text-2xl font-semibold px-4 py-3 text-indigo-600 border-b h-16 items-center justify-center">
+            <SidebarHeader className="text-2xl font-semibold px-4 py-3 text-gray-900 border-b h-16 items-center justify-center">
                 Dashboard School
             </SidebarHeader>
             <SidebarContent>
@@ -42,15 +42,15 @@ export const AppSidebar = () => {
                                                 text-gray-800 dark:text-gray-200 font-medium
                                                 transition duration-500 transform background-color box-shadow
                                                 hover:scale-105
-                                                hover:bg-indigo-100 dark:hover:bg-indigo-800
+                                                hover:bg-blue-100 dark:hover:bg-indigo-800
                                                 hover:shadow-lg ${
                                                     pathname === item.href
-                                                        ? 'bg-indigo-100 scale-105 shadow-lg'
+                                                        ? 'bg-blue-100 scale-105 shadow-lg'
                                                         : ''
                                                 }`}
                                         >
-                                            <item.icon className="w-5 h-5 text-indigo-500 z-10" />
-                                            <span className="relative z-10">
+                                            <item.icon className="w-5 h-5 text-gray-700 z-10" />
+                                            <span className="relative z-10 tex-gray-600">
                                                 {item.title}
                                             </span>
                                             <span className="absolute inset-0 bg-indigo-100 dark:bg-indigo-800 opacity-0 hover:opacity-100 rounded-md z-0" />

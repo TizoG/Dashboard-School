@@ -1,0 +1,65 @@
+---
+import CardBanner from './components/Card-Banner.astro';
+import {
+    FileSpreadsheet,
+    Calendar,
+    FolderOpen,
+    SquareCheckBig,
+    BookOpen,
+} from '@lucide/astro';
+---
+
+<section class="py-20 px-4 bg-white">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2
+                class="font-display text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4"
+            >
+                Todo lo que necesitas para tu día a día escolar
+            </h2>
+            <p
+                class="text-lg md:text-xl text-gray-600 font-display max-w-2xl mx-auto"
+            >
+                Descubre las herramientas que te ayudarán a mantener tu vida
+                académica organizada
+            </p>
+        </div>
+        <div class="flex gap-5">
+            <CardBanner
+                icon={FileSpreadsheet}
+                title="Notas"
+                descripcion="Guarda y organiza tus ideas y recordatorios."
+                color="bg-blue-100"
+                colorIcon="text-blue-600"
+            />
+            <CardBanner
+                icon={Calendar}
+                title="Calendario"
+                descripcion="Gestiona eventos y fechas claves."
+                color="bg-green-100"
+                colorIcon="text-green-600"
+            />
+            <CardBanner
+                icon={FolderOpen}
+                title="Archivos"
+                descripcion="Accede rápidamente a tus documentos."
+                color="bg-violet-100"
+                colorIcon="text-violet-600"
+            />
+            <CardBanner
+                icon={SquareCheckBig}
+                title="Tareas"
+                descripcion="Controla tus pendientes por estados."
+                color="bg-amber-100"
+                colorIcon="text-amber-600"
+            />
+            <CardBanner
+                icon={BookOpen}
+                title="Asignaturas"
+                descripcion="Navega entre tus clases y temas con facilidad."
+                color="bg-red-100"
+                colorIcon="text-red-600"
+            />
+        </div>
+    </div>
+</section>

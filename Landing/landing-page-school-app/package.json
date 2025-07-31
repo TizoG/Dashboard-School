@@ -1,0 +1,17 @@
+{
+  "name": "landing-page-school-app",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@lucide/astro": "^0.533.0",
+    "@tailwindcss/vite": "^4.1.11",
+    "astro": "^5.12.4",
+    "tailwindcss": "^4.1.11"
+  }
+}
