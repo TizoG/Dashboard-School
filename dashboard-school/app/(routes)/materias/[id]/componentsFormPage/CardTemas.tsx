@@ -5,6 +5,7 @@ import { ButtonFormNota } from './ButtonFormNota';
 import axios from 'axios';
 import {
     CircleCheckBig,
+    Clock8,
     SquareArrowOutUpRight,
     SquarePen,
     Trash2,
@@ -19,7 +20,7 @@ type NotaExamen = {
     id: number;
     titulo: string;
     contenido: string | null;
-    nota: number;
+    nota: number | null;
     archivoUrl: string | null;
     fechaVencimiento: string | null;
     tipo: string | null;
@@ -32,7 +33,15 @@ type Tema = {
     contenido: string | null;
     notasExamenes: NotaExamen[];
 };
-export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
+export const CardTemas = ({
+    temas,
+    id,
+    onNotasUpdated,
+}: {
+    id: string;
+    temas: Tema[];
+    onNotasUpdated: (notas: NotaExamen[]) => void;
+}) => {
     const [checkedTemas, setCheckedTemas] = useState<{ [id: number]: boolean }>(
         {}
     );
@@ -55,6 +64,9 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
         );
 
         setTemasNotas(notasPorTema);
+
+        const todasLasNotas = Object.values(notasPorTema).flat();
+        onNotasUpdated(todasLasNotas);
     };
 
     useEffect(() => {
@@ -63,6 +75,11 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
             initialNotas[tema.id] = tema.notasExamenes;
         });
         setTemasNotas(initialNotas);
+
+        const todasLasNotasIniciales = temas.flatMap(
+            (tema) => tema.notasExamenes
+        );
+        onNotasUpdated(todasLasNotasIniciales);
 
         fetchNotas();
     }, [temas]);
@@ -75,10 +92,14 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
     };
 
     const handleNotaAdded = (temaId: number, nota: NotaExamen) => {
-        setTemasNotas((prev) => ({
-            ...prev,
-            [temaId]: [...(prev[temaId] || []), nota],
-        }));
+        setTemasNotas((prev) => {
+            const updatedNotas = {
+                ...prev,
+                [temaId]: [...(prev[temaId] || []), nota],
+            };
+            return updatedNotas;
+            // Comunicar la lista actualizada al padre
+        });
     };
 
     const handleNotaEditada = (notaEditada: NotaExamen) => {
@@ -130,6 +151,7 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
                                     onNotaCreada={(nota) =>
                                         handleNotaAdded(tema.id, nota)
                                     }
+                                    disable={isChecked}
                                 />
                             </div>
                         </div>
@@ -157,7 +179,12 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
                                         >
                                             <div className="flex items-center gap-2 justify-between">
                                                 <div className="flex items-center  gap-2">
-                                                    <CircleCheckBig className="h-5 w-5 text-green-500" />
+                                                    {nota.nota === null ? (
+                                                        <Clock8 className="h-5 w-5 text-amber-500" />
+                                                    ) : (
+                                                        <CircleCheckBig className="h-5 w-5 text-green-500" />
+                                                    )}
+
                                                     <h4 className="font-semibold">
                                                         {nota.titulo}
                                                     </h4>
@@ -198,17 +225,23 @@ export const CardTemas = ({ temas, id }: { id: string; temas: Tema[] }) => {
                                                 <p className="text-sm">
                                                     Vence: {fechaFormateada}
                                                 </p>
-                                                <p className="text-sm text-blue-800 font-medium">
-                                                    Nota: {nota.nota}
-                                                </p>
-
-                                                <a
-                                                    href={nota.archivoUrl ?? ''}
-                                                    className="text-sm text-blue-800 flex gap-1"
-                                                >
-                                                    <SquareArrowOutUpRight className="h-4 w-4" />
-                                                    Ver en Drive
-                                                </a>
+                                                {nota.nota !== null && (
+                                                    <p className="text-sm text-blue-800 font-medium">
+                                                        Nota: {nota.nota}
+                                                    </p>
+                                                )}
+                                                {nota.archivoUrl !== '' && (
+                                                    <a
+                                                        href={
+                                                            nota.archivoUrl ??
+                                                            ''
+                                                        }
+                                                        className="text-sm text-blue-800 flex gap-1"
+                                                    >
+                                                        <SquareArrowOutUpRight className="h-4 w-4" />
+                                                        Ver en Drive
+                                                    </a>
+                                                )}
                                             </div>
                                         </div>
                                     );

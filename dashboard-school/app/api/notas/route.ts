@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
             fechaVencimiento,
         } = await req.json();
 
-        if (!titulo || !nota || !tema_id || !tipo) {
+        if (!titulo || !tema_id || !tipo) {
             return NextResponse.json(
                 { error: 'Faltan datos' },
                 { status: 400 }

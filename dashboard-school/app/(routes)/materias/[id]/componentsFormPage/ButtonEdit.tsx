@@ -51,12 +51,12 @@ export const ButtonEdit = ({
     useEffect(() => {
         if (Open) {
             axios.get(`/api/notas/${notaId}`).then((res) => {
-                setNotas(res.data.nota);
-                setContenido(res.data.contenido);
-                setTitulo(res.data.titulo);
-                setArchivoUrl(res.data.archivoUrl);
-                setFechaVencimiento(res.data.fechaVencimiento);
-                setTipo(res.data.tipo);
+                setNotas(res.data.nota ?? ''); // Si es null, asignar string vacío
+                setContenido(res.data.contenido ?? '');
+                setTitulo(res.data.titulo ?? '');
+                setArchivoUrl(res.data.archivoUrl ?? '');
+                setFechaVencimiento(res.data.fechaVencimiento ?? '');
+                setTipo(res.data.tipo ?? '');
             });
         }
     }, [Open]);

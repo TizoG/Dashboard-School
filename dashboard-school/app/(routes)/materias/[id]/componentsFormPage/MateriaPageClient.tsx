@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { CardTemas } from './CardTemas';
+import { CardResumenNotas } from './CardResumenNotas';
 
 type Asignatura = {
     id: number;
@@ -34,7 +35,11 @@ type NotaExamen = {
     id: number;
     titulo: string;
     contenido: string | null;
-    nota: number; // depende del tipo, aquí usas toString(), así que puede ser number o string
+    nota: number | null;
+    archivoUrl: string | null;
+    fechaVencimiento: string | null;
+    tipo: string | null;
+    tema_id: number;
 };
 type Tema = {
     id: number;
@@ -59,6 +64,11 @@ export default function MateriaPageClient({
     const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
     const [actividades, setActividades] = useState<NotaExamen[]>([]);
     const [activeTab, setActiveTab] = useState<'temario' | 'notas'>('temario');
+    const [progres, setProgreso] = useState(0);
+    const [promedio, setPromedio] = useState(0);
+
+    const notas = asignatura.temario.flatMap((tema) => tema.notasExamenes);
+
     useEffect(() => {
         const fetchTemas = async () => {
             const res = await axios.get(
@@ -79,11 +89,21 @@ export default function MateriaPageClient({
 
     const onTemaCreado = () => setRefresh((prev) => prev + 1);
 
-    const promedio =
-        asignaturas.reduce(
-            (acc, asignatura) => acc + asignatura.clasificacion,
-            0
-        ) / asignaturas.length;
+    const notasValidas = notas.filter((nota) => nota.nota !== null);
+    const promedioNotas =
+        notasValidas.reduce((acc, nota) => acc + (nota.nota || 0), 0) /
+        (notasValidas.length || 1);
+
+    const handleNotasUpdated = (notas: NotaExamen[]) => {
+        setActividades(notas);
+    };
+
+    const totalActividades = notas.length;
+    const actividadesCompletadas = notasValidas.length;
+    const progreso =
+        totalActividades === 0
+            ? 0
+            : (actividadesCompletadas / totalActividades) * 100;
 
     return (
         <section className="space-y-6 p-4 ">
@@ -119,7 +139,7 @@ export default function MateriaPageClient({
                     <div className="flex flex-col">
                         <p className="text-gray-500 text-sm">Progreso</p>
                         <p className="text-2xl font-semibold text-gray-800">
-                            38%
+                            {progreso.toFixed(2)}%
                         </p>
                     </div>
                     <div className="ml-auto flex items-center">
@@ -130,7 +150,9 @@ export default function MateriaPageClient({
                     <div className="flex flex-col">
                         <p className="text-gray-500 text-sm">Promedio Actual</p>
                         <p className="text-2xl font-semibold text-gray-800">
-                            {promedio.toFixed(2)}
+                            {promedioNotas.toFixed(2) === 'NaN'
+                                ? 0
+                                : promedioNotas.toFixed(2)}
                         </p>
                     </div>
                     <div className="ml-auto flex items-center">
@@ -170,6 +192,7 @@ export default function MateriaPageClient({
                 >
                     <p>Temario</p>
                 </div>
+
                 <div
                     onClick={() => setActiveTab('notas')}
                     className={`${
@@ -179,14 +202,25 @@ export default function MateriaPageClient({
                     <p>Resumen de Notas</p>
                 </div>
             </div>
-            <div className="flex justify-between">
-                <h2 className="text-2xl font-semibold mb-2">Temario</h2>
-                <ButtonForm
-                    asignaturaId={asignatura.id}
-                    onTemaCreado={onTemaCreado}
-                />
-            </div>
-            <CardTemas temas={temas} id={asignatura.id.toString()} />
+            {activeTab === 'temario' && (
+                <>
+                    <div className="flex justify-between">
+                        <h2 className="text-2xl font-semibold mb-2">Temario</h2>
+                        <ButtonForm
+                            asignaturaId={asignatura.id}
+                            onTemaCreado={onTemaCreado}
+                        />
+                    </div>
+                    <CardTemas
+                        temas={temas}
+                        id={asignatura.id.toString()}
+                        onNotasUpdated={handleNotasUpdated}
+                    />
+                </>
+            )}
+            {activeTab === 'notas' && (
+                <CardResumenNotas temas={temas} id={asignatura.id.toString()} />
+            )}
         </section>
     );
 }

@@ -50,7 +50,7 @@ model Temario{
 model NotasExamenes{
   id Int @id @default(autoincrement())
   titulo String
-  nota Float 
+  nota Float? 
   contenido String? @db.Text
   fechaCreacion DateTime @default(now())
   fechaVencimiento DateTime

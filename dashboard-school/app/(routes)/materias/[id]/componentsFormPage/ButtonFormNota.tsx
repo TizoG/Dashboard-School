@@ -39,9 +39,11 @@ type NotaExamen = {
 export const ButtonFormNota = ({
     temaId,
     onNotaCreada,
+    disable,
 }: {
     temaId: number;
     onNotaCreada?: (nota: NotaExamen) => void;
+    disable?: boolean;
 }) => {
     const [Open, setOpen] = useState(false);
     const [nota, setNotas] = useState('');
@@ -85,6 +87,7 @@ export const ButtonFormNota = ({
             <LiquidButton
                 className="cursor-pointer mt-4 ml-2"
                 onClick={() => setOpen(true)}
+                disabled={disable}
             >
                 Actividad
             </LiquidButton>
