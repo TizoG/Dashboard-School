@@ -37,7 +37,9 @@ export const CardTemas = ({
     temas,
     id,
     onNotasUpdated,
+    asignaturaId,
 }: {
+    asignaturaId: number;
     id: string;
     temas: Tema[];
     onNotasUpdated: (notas: NotaExamen[]) => void;
@@ -48,6 +50,7 @@ export const CardTemas = ({
     const [temasNotas, setTemasNotas] = useState<{
         [temaId: number]: NotaExamen[];
     }>({});
+    const [localTemas, setTemas] = useState<Tema[]>(temas);
 
     const fetchNotas = async () => {
         // Obtener todas las notas por tema, pero ahora solo con tema_id no sirve para todos temas juntos,
@@ -82,6 +85,7 @@ export const CardTemas = ({
         onNotasUpdated(todasLasNotasIniciales);
 
         fetchNotas();
+        setTemas(temas);
     }, [temas]);
 
     const toggleCheckbox = (id: number) => {
@@ -117,9 +121,20 @@ export const CardTemas = ({
         });
     };
 
+    const handleDeleteTema = async (temaId: number) => {
+        try {
+            await axios.delete(`/api/temario/${temaId}`);
+            // Puedes llamar al fetch original o filtrar localmente:
+            setTemas((prev) => prev.filter((tema) => tema.id !== temaId));
+            fetchNotas();
+        } catch (error) {
+            console.error('Error al eliminar el tema:', error);
+        }
+    };
+
     return (
         <>
-            {temas.map((tema) => {
+            {localTemas.map((tema) => {
                 const isChecked = checkedTemas[tema.id] || false;
                 const notas = temasNotas[tema.id] || [];
                 return (
@@ -146,13 +161,23 @@ export const CardTemas = ({
                                         {tema.contenido}
                                     </p>
                                 </div>
-                                <ButtonFormNota
-                                    temaId={tema.id}
-                                    onNotaCreada={(nota) =>
-                                        handleNotaAdded(tema.id, nota)
-                                    }
-                                    disable={isChecked}
-                                />
+                                <div className="flex gap-2 items-end justify-center ">
+                                    <ButtonFormNota
+                                        temaId={tema.id}
+                                        onNotaCreada={(nota) =>
+                                            handleNotaAdded(tema.id, nota)
+                                        }
+                                        disable={isChecked}
+                                    />
+                                    <Button
+                                        onClick={() =>
+                                            handleDeleteTema(tema.id)
+                                        }
+                                        className="p-5 hover:text-gray-800 hover:cursor-pointer hover:bg-gray-100 flex items-center"
+                                    >
+                                        <Trash2 className="h-12 w-12" />
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                         {notas.length > 0 && (

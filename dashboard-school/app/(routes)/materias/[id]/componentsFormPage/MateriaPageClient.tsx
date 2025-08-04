@@ -215,6 +215,7 @@ export default function MateriaPageClient({
                         temas={temas}
                         id={asignatura.id.toString()}
                         onNotasUpdated={handleNotasUpdated}
+                        asignaturaId={asignatura.id}
                     />
                 </>
             )}
