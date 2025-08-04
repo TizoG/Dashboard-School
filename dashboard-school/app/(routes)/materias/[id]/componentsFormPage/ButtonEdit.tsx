@@ -1,6 +1,3 @@
-'use client';
-
-import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
 import {
     Dialog,
     DialogBackdrop,
@@ -21,10 +18,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useUser } from '@clerk/nextjs';
 import axios from 'axios';
-import { set } from 'date-fns';
-import { useState } from 'react';
+import { SquarePen } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 type NotaExamen = {
     id: number;
@@ -36,12 +32,13 @@ type NotaExamen = {
     tema_id: number;
     tipo: string | null;
 };
-export const ButtonFormNota = ({
-    temaId,
-    onNotaCreada,
+
+export const ButtonEdit = ({
+    notaId,
+    onNotaEdit,
 }: {
-    temaId: number;
-    onNotaCreada?: (nota: NotaExamen) => void;
+    notaId: number;
+    onNotaEdit?: (nota: NotaExamen) => void;
 }) => {
     const [Open, setOpen] = useState(false);
     const [nota, setNotas] = useState('');
@@ -51,14 +48,27 @@ export const ButtonFormNota = ({
     const [fechaVencimiento, setFechaVencimiento] = useState('');
     const [tipo, setTipo] = useState('');
 
+    useEffect(() => {
+        if (Open) {
+            axios.get(`/api/notas/${notaId}`).then((res) => {
+                setNotas(res.data.nota);
+                setContenido(res.data.contenido);
+                setTitulo(res.data.titulo);
+                setArchivoUrl(res.data.archivoUrl);
+                setFechaVencimiento(res.data.fechaVencimiento);
+                setTipo(res.data.tipo);
+            });
+        }
+    }, [Open]);
+
     const handleSubmit = async () => {
         try {
             console.log('fechaVencimiento antes de enviar:', fechaVencimiento);
-            const res = await axios.post('/api/notas', {
+            const res = await axios.put(`/api/notas/${notaId}`, {
                 titulo,
                 contenido,
-                nota,
-                tema_id: temaId,
+                nota: parseFloat(nota),
+                tema_id: notaId,
                 archivoUrl,
                 fechaVencimiento: fechaVencimiento,
                 tipo,
@@ -72,28 +82,26 @@ export const ButtonFormNota = ({
             setTipo('');
             setOpen(false);
 
-            if (onNotaCreada) {
-                onNotaCreada(res.data);
+            if (onNotaEdit) {
+                onNotaEdit(res.data);
             }
         } catch (error) {
             console.log('Error al crear el tema: ', error);
             alert('Hubo un error al guardar el tema AQUI PONDREMOS CARTELES');
         }
     };
+
     return (
         <>
-            <LiquidButton
-                className="cursor-pointer mt-4 ml-2"
-                onClick={() => setOpen(true)}
-            >
-                Actividad
-            </LiquidButton>
+            <Button variant={'ghost'} onClick={() => setOpen(true)}>
+                <SquarePen className="h-4 w-4" />
+            </Button>
             <Dialog open={Open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
 
                 <DialogPanel>
                     <DialogHeader>
-                        <DialogTitle>Nueva Nota</DialogTitle>
+                        <DialogTitle>Editar Nota</DialogTitle>
                     </DialogHeader>
 
                     <div>

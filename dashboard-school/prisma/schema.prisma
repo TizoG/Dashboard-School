@@ -53,6 +53,8 @@ model NotasExamenes{
   nota Float 
   contenido String? @db.Text
   fechaCreacion DateTime @default(now())
+  fechaVencimiento DateTime
+  tipo String?
 
   tema_id Int
   tema Temario @relation(fields: [tema_id], references: [id], onDelete: Cascade)
