@@ -80,6 +80,7 @@ model NotasRapidas{
 enum Estado{
   PENDIENTE
   COMPLETADA
+  EN_PROCESO
 }
 
 enum Prioridad{

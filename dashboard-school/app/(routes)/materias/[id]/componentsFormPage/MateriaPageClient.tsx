@@ -225,3 +225,5 @@ export default function MateriaPageClient({
         </section>
     );
 }
+
+// NO PODEMOS ACTUALIZAR LOS CONTADORES SOLO LO HACEMOS CON LOS DE ACTIVIDADES

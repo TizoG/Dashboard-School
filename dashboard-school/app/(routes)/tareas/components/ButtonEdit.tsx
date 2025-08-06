@@ -1,6 +1,3 @@
-'use client';
-
-import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
 import {
     Dialog,
     DialogBackdrop,
@@ -21,66 +18,95 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Tareas } from '@/lib/generated/prisma';
 import axios from 'axios';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { set } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { LuPen } from 'react-icons/lu';
 
-type Prosps = {
-    onRefresh: () => void;
+type TareasProps = {
+    tarea: {
+        id: number;
+        titulo: string;
+        descripcion: string;
+        tipo: string;
+        estado: string;
+        asignatura: string;
+        prioridad: string;
+        fechaVencimiento: string;
+    };
+    onUpdate?: () => void;
 };
-
-export const ButtonTodo = ({ onRefresh }: Prosps) => {
-    const [Open, setOpen] = useState(false);
+export const ButtonEdit = ({
+    tareaId,
+    onUpdate,
+}: {
+    tareaId: number;
+    onUpdate?: (tarea: TareasProps) => void;
+}) => {
+    const [open, setOpen] = useState(false);
     const [titulo, setTitulo] = useState('');
-    const [asignatura, setAsignatura] = useState('');
+    const [descripcion, setDescripcion] = useState('');
     const [tipo, setTipo] = useState('');
     const [estado, setEstado] = useState('');
-    const [descripcion, setDescripcion] = useState('');
+    const [asignatura, setAsignatura] = useState('');
     const [prioridad, setPrioridad] = useState('');
     const [fechaVencimiento, setFechaVencimiento] = useState('');
 
+    useEffect(() => {
+        if (open) {
+            axios.get(`/api/tareas/${tareaId}`).then((res) => {
+                setTitulo(res.data.titulo ?? '');
+                setDescripcion(res.data.descripcion ?? '');
+                setTipo(res.data.tipo ?? '');
+                setEstado(res.data.estado ?? '');
+                setAsignatura(res.data.asignatura ?? '');
+                setPrioridad(res.data.prioridad ?? '');
+                setFechaVencimiento(res.data.fechaVencimiento ?? '');
+            });
+        }
+    }, [open]);
+
     const handleSubmit = async () => {
         try {
-            const reponse = await axios.post('/api/tareas', {
+            const res = await axios.put(`/api/tareas/${tareaId}`, {
                 titulo,
-                asignatura,
                 descripcion,
                 tipo,
                 estado,
+                asignatura,
                 prioridad,
                 fechaVencimiento,
             });
 
-            toast.success('Tarea creada', { duration: 3000 });
+            setTitulo('');
+            setDescripcion('');
+            setTipo('');
+            setEstado('');
+            setAsignatura('');
+            setPrioridad('');
+            setFechaVencimiento('');
+            setOpen(false);
+
+            if (onUpdate) {
+                onUpdate(res.data);
+            }
         } catch (error) {
             console.log(error);
-            toast.error('Error al crear la tarea');
         }
-
-        setOpen(false);
-        setTitulo('');
-        setAsignatura('');
-        setTipo('');
-        setEstado('');
-        setDescripcion('');
-        setPrioridad('');
-        setFechaVencimiento('');
-        onRefresh();
     };
+
     return (
         <>
-            <LiquidButton
-                className="cursor-pointer"
-                onClick={() => setOpen(true)}
-            >
-                Añadir tarea
-            </LiquidButton>
-            <Dialog open={Open} onClose={() => setOpen(false)}>
+            <Button variant={'ghost'} onClick={() => setOpen(true)}>
+                <LuPen />
+            </Button>
+            <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
 
                 <DialogPanel>
                     <DialogHeader>
-                        <DialogTitle>Nueva Tarea</DialogTitle>
+                        <DialogTitle>Actualiza la Tarea</DialogTitle>
                     </DialogHeader>
 
                     <div className="flex flex-col gap-2">
