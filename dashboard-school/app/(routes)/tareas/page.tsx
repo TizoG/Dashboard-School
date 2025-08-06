@@ -8,9 +8,16 @@ import { TfiComment } from 'react-icons/tfi';
 import { ButtonTodo } from './components/ButtonTodo';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Trash2 } from 'lucide-react';
+import {
+    Check,
+    CircleAlert,
+    Clock8,
+    SquareCheckBig,
+    Trash2,
+} from 'lucide-react';
 import { ButtonEdit } from './components/ButtonEdit';
 import { ButtonDelete } from './components/ButtonDelete';
+import { CardTareas } from './components/CardTareas';
 
 type TareasProps = {
     id: number;
@@ -38,6 +45,14 @@ export default function Tareas() {
     useEffect(() => {
         cargarTareas();
     }, []);
+
+    const obtenerTotalTareas = (tareas: TareasProps[]) => tareas;
+    const obtenerTareasPendientes = (tareas: TareasProps[]) =>
+        tareas.filter((tarea) => tarea.estado === 'PENDIENTE');
+    const obtenerTotalProceso = (tareas: TareasProps[]) =>
+        tareas.filter((tarea) => tarea.estado === 'EN_PROCESO');
+    const obtenerTareasCompletadas = (tareas: TareasProps[]) =>
+        tareas.filter((tarea) => tarea.estado === 'COMPLETADA');
     return (
         <section className="space-y-6 p-4 ">
             <div className=" bg-gradient-to-r from-orange-100 to-red-100 rounded-lg p-6 ">
@@ -52,21 +67,41 @@ export default function Tareas() {
                         </p>
                     </div>
 
-                    <div className="flex items-center pt-4">
+                    <div className="flex items-center">
                         <ButtonTodo onRefresh={cargarTareas} />
                     </div>
                 </div>
-                <div className="flex gap-2 items-end justify-center">
-                    <div className="flex gap-2 items-center">
-                        <CiCircleCheck className="text-gray-400" />
-                        <p className="text-gray-400">
-                            {tareas.length}{' '}
-                            {tareas.length === 1 ? 'tarea' : 'tareas'}
-                        </p>
-                    </div>
-                </div>
             </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <CardTareas
+                    titulo="Total Tareas"
+                    tareas={tareas}
+                    procesarTareas={obtenerTotalTareas}
+                    icon={<SquareCheckBig className="h-8 w-8 font-bold" />}
+                    color="text-orange-500 "
+                />
+                <CardTareas
+                    titulo="Pendientes"
+                    tareas={tareas}
+                    procesarTareas={obtenerTareasPendientes}
+                    icon={<Clock8 className="h-8 w-8 font-bold" />}
+                    color="text-red-500"
+                />
+                <CardTareas
+                    titulo="En Progreso"
+                    tareas={tareas}
+                    procesarTareas={obtenerTotalProceso}
+                    icon={<CircleAlert className="h-8 w-8 font-bold" />}
+                    color="text-yellow-500"
+                />
+                <CardTareas
+                    titulo="Completadas"
+                    tareas={tareas}
+                    procesarTareas={obtenerTareasCompletadas}
+                    icon={<SquareCheckBig className="h-8 w-8 font-bold" />}
+                    color="text-green-500"
+                />
+            </div>
             <div>
                 <div className="flex flex-col">
                     {tareas.map((tarea) => (
