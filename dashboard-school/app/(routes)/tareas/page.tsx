@@ -15,9 +15,15 @@ import {
     SquareCheckBig,
     Trash2,
 } from 'lucide-react';
-import { ButtonEdit } from './components/ButtonEdit';
+import {
+    ButtonEdit,
+    ChangeEstado,
+    ChangeEstadoCompletado,
+} from './components/ButtonEdit';
 import { ButtonDelete } from './components/ButtonDelete';
 import { CardTareas } from './components/CardTareas';
+import { HeadersTareas } from './components/HeadersTareas';
+import { Badge } from '@/components/ui/badge';
 
 type TareasProps = {
     id: number;
@@ -31,6 +37,8 @@ type TareasProps = {
 };
 export default function Tareas() {
     const [tareas, setTareas] = useState<TareasProps[]>([]);
+    const [tareasFiltradas, setTareasFiltradas] = useState<TareasProps[]>([]);
+    const [estado, setEstado] = useState('');
 
     const cargarTareas = async () => {
         const res = await axios
@@ -38,6 +46,7 @@ export default function Tareas() {
             .then((res) => {
                 console.log('Tarea recibida:', res.data);
                 setTareas(res.data);
+                setTareasFiltradas(res.data);
             })
             .catch((err) => console.log(err));
     };
@@ -53,6 +62,28 @@ export default function Tareas() {
         tareas.filter((tarea) => tarea.estado === 'EN_PROCESO');
     const obtenerTareasCompletadas = (tareas: TareasProps[]) =>
         tareas.filter((tarea) => tarea.estado === 'COMPLETADA');
+
+    const manejarFiltrado = (filtro: {
+        estado?: string;
+        prioridad?: string;
+    }) => {
+        let tareasFiltradas = tareas;
+
+        if (filtro.estado && filtro.estado !== 'all') {
+            tareasFiltradas = tareasFiltradas.filter(
+                (tarea) => tarea.estado === filtro.estado
+            );
+        }
+
+        if (filtro.prioridad && filtro.prioridad !== 'all') {
+            tareasFiltradas = tareasFiltradas.filter(
+                (tarea) => tarea.prioridad === filtro.prioridad
+            );
+        }
+
+        setTareasFiltradas(tareasFiltradas);
+    };
+
     return (
         <section className="space-y-6 p-4 ">
             <div className=" bg-gradient-to-r from-orange-100 to-red-100 rounded-lg p-6 ">
@@ -102,14 +133,81 @@ export default function Tareas() {
                     color="text-green-500"
                 />
             </div>
+            <HeadersTareas tareas={tareas} onFiltrar={manejarFiltrado} />
+
             <div>
-                <div className="flex flex-col">
-                    {tareas.map((tarea) => (
+                <div className="flex flex-col gap-8">
+                    {tareasFiltradas.map((tarea) => (
                         <div
                             key={tarea.id}
-                            className="my-4 border-b py-4 flex justify-between w-full "
+                            className="bg-white p-4 rounded-lg border border-gray-200 w-full flex justify-between items-center"
                         >
-                            <span>{tarea.titulo}</span>
+                            <div className="flex flex-col  gap-2 mt-2">
+                                <div className="flex items-center gap-2">
+                                    <div
+                                        className={`${
+                                            tarea.estado === 'PENDIENTE'
+                                                ? 'bg-red-500'
+                                                : tarea.estado === 'EN_PROCESO'
+                                                ? 'bg-yellow-500'
+                                                : tarea.estado === 'COMPLETADA'
+                                                ? 'bg-green-500'
+                                                : ''
+                                        } rounded-full w-3 h-3 `}
+                                    ></div>
+                                    <span className="font-semibold text-md">
+                                        {tarea.titulo}
+                                    </span>
+                                    <Badge
+                                        className={`${
+                                            tarea.estado === 'PENDIENTE'
+                                                ? 'bg-red-100 text-red-800'
+                                                : tarea.estado === 'EN_PROCESO'
+                                                ? 'bg-yellow-100 text-yellow-800'
+                                                : tarea.estado === 'COMPLETADA'
+                                                ? 'bg-green-100 text-green-800'
+                                                : ''
+                                        } font-semibold  rounded-lg text-[10px]`}
+                                    >
+                                        {tarea.estado}
+                                    </Badge>
+                                </div>
+                                <div className="text-sm text-gray-600 flex flex-col">
+                                    <p>{tarea.descripcion}</p>
+                                    <div className="flex gap-6 items-center text-gray-500 mt-2">
+                                        <p>
+                                            {new Date(
+                                                tarea.fechaVencimiento
+                                            ).toLocaleDateString()}
+                                        </p>{' '}
+                                        |
+                                        <p className="text-sm">
+                                            {tarea.asignatura}
+                                        </p>
+                                    </div>
+                                </div>
+                                {tarea.estado === 'COMPLETADA' ? (
+                                    ''
+                                ) : tarea.estado === 'PENDIENTE' ? (
+                                    <div className="flex gap-2 mt-2">
+                                        <ChangeEstado
+                                            id={tarea.id}
+                                            onUpdate={cargarTareas}
+                                        />
+                                        <ChangeEstadoCompletado
+                                            id={tarea.id}
+                                            onUpdate={cargarTareas}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2 mt-2">
+                                        <ChangeEstadoCompletado
+                                            id={tarea.id}
+                                            onUpdate={cargarTareas}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                             <div className="flex gap-3 cursor-pointer">
                                 <ButtonEdit
                                     tareaId={tarea.id}

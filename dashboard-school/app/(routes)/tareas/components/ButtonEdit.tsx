@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tareas } from '@/lib/generated/prisma';
 import axios from 'axios';
 import { set } from 'date-fns';
+import { SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { LuPen } from 'react-icons/lu';
 
@@ -99,7 +100,7 @@ export const ButtonEdit = ({
     return (
         <>
             <Button variant={'ghost'} onClick={() => setOpen(true)}>
-                <LuPen />
+                <SquarePen />
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogBackdrop />
@@ -239,5 +240,118 @@ export const ButtonEdit = ({
                 </DialogPanel>
             </Dialog>
         </>
+    );
+};
+
+export const ChangeEstado = ({
+    id,
+    onUpdate,
+}: {
+    id: Number;
+    onUpdate?: (tarea: TareasProps) => void;
+}) => {
+    const [titulo, setTitulo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [tipo, setTipo] = useState('');
+    const [estado, setEstado] = useState('');
+    const [asignatura, setAsignatura] = useState('');
+    const [prioridad, setPrioridad] = useState('');
+    const [fechaVencimiento, setFechaVencimiento] = useState('');
+
+    useEffect(() => {
+        axios.get(`/api/tareas/${id}`).then((res) => {
+            setTitulo(res.data.titulo ?? '');
+            setDescripcion(res.data.descripcion ?? '');
+            setTipo(res.data.tipo ?? '');
+            setEstado(res.data.estado ?? '');
+            setAsignatura(res.data.asignatura ?? '');
+            setPrioridad(res.data.prioridad ?? '');
+            setFechaVencimiento(res.data.fechaVencimiento ?? '');
+        });
+    }, []);
+    const seteoEstado = async () => {
+        const rest = await axios.put(`/api/tareas/${id}`, {
+            titulo,
+            descripcion,
+            tipo,
+            estado: 'EN_PROCESO',
+            asignatura,
+            prioridad,
+            fechaVencimiento,
+        });
+
+        console.log('Estado actualizado:', rest.data);
+        setEstado(rest.data.estado);
+        if (onUpdate) {
+            onUpdate(rest.data);
+        }
+    };
+
+    return (
+        <Button
+            value={estado}
+            onClick={seteoEstado}
+            variant={'outline'}
+            size={'sm'}
+            className="cursor-pointer"
+        >
+            Iniciar
+        </Button>
+    );
+};
+export const ChangeEstadoCompletado = ({
+    id,
+    onUpdate,
+}: {
+    id: Number;
+    onUpdate?: (tarea: TareasProps) => void;
+}) => {
+    const [titulo, setTitulo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [tipo, setTipo] = useState('');
+    const [estado, setEstado] = useState('');
+    const [asignatura, setAsignatura] = useState('');
+    const [prioridad, setPrioridad] = useState('');
+    const [fechaVencimiento, setFechaVencimiento] = useState('');
+
+    useEffect(() => {
+        axios.get(`/api/tareas/${id}`).then((res) => {
+            setTitulo(res.data.titulo ?? '');
+            setDescripcion(res.data.descripcion ?? '');
+            setTipo(res.data.tipo ?? '');
+            setEstado(res.data.estado ?? '');
+            setAsignatura(res.data.asignatura ?? '');
+            setPrioridad(res.data.prioridad ?? '');
+            setFechaVencimiento(res.data.fechaVencimiento ?? '');
+        });
+    }, []);
+    const seteoEstado = async () => {
+        const rest = await axios.put(`/api/tareas/${id}`, {
+            titulo,
+            descripcion,
+            tipo,
+            estado: 'COMPLETADA',
+            asignatura,
+            prioridad,
+            fechaVencimiento,
+        });
+
+        console.log('Estado actualizado:', rest.data);
+        setEstado(rest.data.estado);
+        if (onUpdate) {
+            onUpdate(rest.data);
+        }
+    };
+
+    return (
+        <Button
+            value={estado}
+            onClick={seteoEstado}
+            variant={'outline'}
+            size={'sm'}
+            className="cursor-pointer"
+        >
+            Marcar como completada
+        </Button>
     );
 };
