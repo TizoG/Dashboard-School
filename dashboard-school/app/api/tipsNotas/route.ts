@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { tipo, titulo, contenido } = body;
+        const { tipo, titulo, contenido, asignatura, tema } = body;
         if (!tipo || !titulo || !contenido) {
             return NextResponse.json(
                 { error: 'Faltan datos' },
@@ -17,6 +17,8 @@ export async function POST(req: Request) {
                 tipo,
                 titulo,
                 contenido,
+                asignatura,
+                tema,
                 fechaCreacion: new Date(),
             },
         });

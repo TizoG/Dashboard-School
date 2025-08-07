@@ -73,6 +73,8 @@ model NotasRapidas{
   tipo TipoNota
   titulo String
   contenido String @db.Text
+  asignatura String?
+  tema String?
   fechaCreacion DateTime @default(now())
 
 }

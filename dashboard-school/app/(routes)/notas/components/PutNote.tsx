@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { LuPen } from 'react-icons/lu';
 import { prisma } from '@/lib/prisma';
 import axios from 'axios';
+import { SquarePen } from 'lucide-react';
 
 type PutNoteProps = {
     nota: {
@@ -48,10 +49,10 @@ export const PutNote = ({ nota, onUpdate }: PutNoteProps) => {
         <>
             <Button
                 variant={'ghost'}
-                className="cursor-pointer hover:scale-[1.2] hover:bg-transparent "
+                className="cursor-pointer  "
                 onClick={() => setOpen(true)}
             >
-                <LuPen />
+                <SquarePen />
                 <Dialog open={Open} onClose={() => setOpen(false)}>
                     <DialogBackdrop />
 
